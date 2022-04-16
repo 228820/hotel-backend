@@ -38,8 +38,8 @@ CREATE TABLE clients (
     city VARCHAR(64) NOT NULL,
     street VARCHAR(64) NOT NULL,
     house_number VARCHAR(10) NOT NULL,
-    apartment_number VARCHAR(10) NOT NULL
-)
+    apartment_number VARCHAR(10)
+);
 
 CREATE TABLE reservations (
     reservation_id SERIAL PRIMARY KEY,
@@ -63,7 +63,7 @@ CREATE TABLE payments (
     reservation_id INT NOT NULL,
     date DATE NOT NULL,
     amount NUMERIC NOT NULL,    
-    card_id: VARCHAR(16) NOT NULL,
+    card_id VARCHAR(16) NOT NULL,
 
     CONSTRAINT fk_reservations
         FOREIGN KEY(reservation_id)
