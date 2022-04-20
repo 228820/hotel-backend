@@ -68,4 +68,13 @@ CREATE TABLE payments (
     CONSTRAINT fk_reservations
         FOREIGN KEY(reservation_id)
             REFERENCES reservations(reservation_id)
-)
+);
+
+CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,
+    email VARCHAR(64) NOT NULL,
+    login VARCHAR(64) NOT NULL,
+    password VARCHAR(128) NOT NULL,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(120) NOT NULL
+);

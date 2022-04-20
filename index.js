@@ -3,6 +3,7 @@ const { PORT } = require('./config')
 const cors = require('cors')
 const roomRouter = require('./routes/roomRouter')
 const reservationRouter = require('./routes/reservationRouter')
+const administrationRouter = require('./routes/administrationRouter')
 const app = express()
 
 //db
@@ -16,6 +17,7 @@ app.use(cors())
 //  routes
 app.use('/', roomRouter)
 app.use('/', reservationRouter)
+app.use('/', administrationRouter)
 
 //  server
 app.listen(PORT, () => {
