@@ -6,11 +6,15 @@ CREATE DATABASE hotel_database;
 
 CREATE TABLE rooms (
     room_id SERIAL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL, -- name of room
+    img_link VARCHAR(128) NOT NULL 
+    DEFAULT 'https://encrypted-tbn0.gstatic.com/
+    images?q=tbn:ANd9GcTa_Oc-DoKyRc7pc3-32xQzefUjPycL3-w07g&usqp=CAU', -- link to img of room which is saved on 'server'
+    title VARCHAR(50) NOT NULL, -- name of room
     sleeps INT NOT NULL, -- sleep slots (example. number of beds)
     floor INT NOT NULL,
     price NUMERIC NOT NULL, -- per night
-    description VARCHAR(512) NOT NULL
+    description VARCHAR(128) NOT NULL, -- short description for rooms cards
+    extended_description VARCHAR(512) NOT NULL -- description for rooms pages
 );
 
 CREATE TYPE feature_type AS ENUM ('is_parking', 'is_wifi', 'animal_allow');
@@ -77,4 +81,17 @@ CREATE TABLE users (
     password VARCHAR(128) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(120) NOT NULL
+);
+
+CREATE TABLE ratings (
+    rating_id SERIAL PRIMARY KEY,
+    room_id INT NOT NULL,
+    rating INT NOT NULL, -- count of 'stars' from 0 to 5
+    review VARCHAR(512), -- message from clients for their stay
+
+    CONSTRAINT chk_rating
+        CHECK (rating between 0 and 5),
+    CONSTRAINT fk_rooms
+        FOREIGN KEY(room_id)
+            REFERENCES rooms(room_id)
 );
