@@ -6,9 +6,7 @@ CREATE DATABASE hotel_database;
 
 CREATE TABLE rooms (
     room_id SERIAL PRIMARY KEY,
-    img_link VARCHAR(128) NOT NULL 
-    DEFAULT 'https://encrypted-tbn0.gstatic.com/
-    images?q=tbn:ANd9GcTa_Oc-DoKyRc7pc3-32xQzefUjPycL3-w07g&usqp=CAU', -- link to img of room which is saved on 'server'
+    img_link VARCHAR(128), 
     title VARCHAR(50) NOT NULL, -- name of room
     sleeps INT NOT NULL, -- sleep slots (example. number of beds)
     floor INT NOT NULL,
