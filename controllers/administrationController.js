@@ -1,6 +1,7 @@
 const db = require('../db/pg')
 const bcrypt = require('bcrypt')
 const bcryptSalt = bcrypt.genSaltSync(10)
+const jwt = require('jsonwebtoken')
 
 const tUsers = 'users';
 
@@ -32,13 +33,27 @@ class AdministrationController {
 
             if (validPassword) {
                 delete user.password
-                return res.status(200).json(user)
+                delete user.user_id
+
+                const token = this.generateAccessToken(user);
+                return res.status(200).json({
+                    ...user,
+                    token: token
+                })
             } else {
                 return res.status(401).json({ message: incorrectCredentialsMessage })
             }
         } catch (err) {
             return res.status(500).json({ message: err.message })
         }
+    }
+
+    async test(req, res){
+        return res.status(200).json(req.user);
+    }
+
+    generateAccessToken(user) {
+        return jwt.sign(user, process.env.TOKEN_SECRET, { expiresIn: '1800s' });
     }
 }
 
