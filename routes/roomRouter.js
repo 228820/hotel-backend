@@ -9,8 +9,6 @@ router.get('/rooms', RoomController.getAllRooms)
 router.get('/rooms/ratings',RoomController.getAllRoomsRatings)
 //  Get one room
 router.get('/rooms/:id', RoomController.getRoom)
-//  Get one room features
-router.get('/room/features/:id', RoomController.getRoomFeatures)
 //  Add new room
 router.post('/rooms', RoomController.saveRoom)
 //  Update room

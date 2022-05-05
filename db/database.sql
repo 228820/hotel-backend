@@ -19,13 +19,14 @@ CREATE TYPE feature_type AS ENUM ('is_parking', 'is_wifi', 'animal_allow');
 
 CREATE TABLE room_features (
     feature_id SERIAL PRIMARY KEY,
-    room_id INT,
+    room_id INT NOT NULL,
     type feature_type NOT NULL, -- type of feature
     status Boolean NOT NULL DEFAULT FALSE,
 
     CONSTRAINT fk_rooms
         FOREIGN KEY(room_id)
             REFERENCES rooms(room_id)
+                ON DELETE CASCADE
 );
 
 CREATE TABLE clients (
@@ -92,4 +93,5 @@ CREATE TABLE ratings (
     CONSTRAINT fk_rooms
         FOREIGN KEY(room_id)
             REFERENCES rooms(room_id)
+                ON DELETE CASCADE
 );

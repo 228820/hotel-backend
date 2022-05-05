@@ -1,22 +1,5 @@
 const db = require('../db/pg')
 
-let room = {
-    room_id: null,
-    img_link: null,
-    title: null,
-    sleeps: null,
-    floor: null,
-    price: null,
-    description: null,
-    extended_description: null,
-    is_parking: null,
-    is_wifi: null,
-    animal_allow: null,
-    count_of_ratings: null,
-    rating: null,
-    review: null
-}
-
 class RoomController {
     async getAllRooms(req, res) {
         // Try to get all rooms
@@ -54,39 +37,6 @@ class RoomController {
         }        
     }
 
-    async getRoomFeatures(req, res) {
-        //  Get room id from request
-        const id = req.params.id
-        if(!id) {
-            return res.status(500).json({ message: 'Incorrect room id!' })            
-        }
-
-        // Try to get all rooms features
-        try {
-            const { rows } = await db.query(`select room_id, 
-                                                case (select status from room_features where room_features.room_id = $1 and type = 'is_wifi')
-                                                when true then true
-                                                when false then false
-                                                end is_wifi,
-                                                
-                                                case (select status from room_features where room_features.room_id = $1 and type = 'is_parking')
-                                                when true then true
-                                                when false then false
-                                                end is_parking,
-                                                
-                                                case (select status from room_features where room_features.room_id = $1 and type = 'animal_allow')
-                                                when true then true
-                                                when false then false
-                                                end animal_allow
-                                            from room_features
-                                            where room_id = $1
-                                            group by room_id`, [id])
-            return res.status(200).json({ rows })
-        } catch (err) {
-            return res.status(500).json({ message: err.message})
-        }
-    }
-
     async saveRoom(req, res) {
         const { title, sleeps, floor, price, description, extended_description } = req.body
         let { img_link } = req.body
@@ -101,8 +51,8 @@ class RoomController {
 
         // Try to save room
         try {
-            await db.query(`INSERT INTO ROOMS(IMG_LINK, TITLE, FLOOR, PRICE, DESCRIPTION, EXTENDED_DESCRIPTION)
-            VALUES($1, $2, $3, $4, $5, $6)`,
+            await db.query(`INSERT INTO ROOMS(IMG_LINK, TITLE, SLEEPS, FLOOR, PRICE, DESCRIPTION, EXTENDED_DESCRIPTION)
+            VALUES($1, $2, $3, $4, $5, $6, $7)`,
             [img_link, title, sleeps, floor, price, description, extended_description])
 
             return res.sendStatus(201)
@@ -112,6 +62,12 @@ class RoomController {
     }
 
     async updateRoom(req, res) {
+        //  Get room id from request
+        const id = req.params.id
+        if(!id) {
+            return res.status(500).json({ message: 'Incorrect room id!' })            
+        }
+
         const { title, sleeps, floor, price, description, extended_description } = req.body
         let { img_link } = req.body
 
@@ -127,8 +83,9 @@ class RoomController {
         try {
             await db.query(`UPDATE ROOMS SET IMG_LINK = $1, TITLE = $2, SLEEPS = $3,
             FLOOR = $4, PRICE = $5, DESCRIPTION = $6, EXTENDED_DESCRIPTION = $7
-            WHERE ROOM_ID = $7`,
+            WHERE ROOM_ID = $8`,
             [img_link, title, sleeps, floor, price, description, extended_description, id])
+
             return res.sendStatus(202)
         } catch (err) {
             return res.status(500).json({ message: err.message })            
