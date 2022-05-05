@@ -1,12 +1,14 @@
 const express = require('express')
 const { PORT } = require('./config')
 const cors = require('cors')
+
+// Routers
 const roomRouter = require('./routes/roomRouter')
 const reservationRouter = require('./routes/reservationRouter')
 const administrationRouter = require('./routes/administrationRouter')
-const roomFeaturesRouter = require('./routes/roomFeaturesRotuer')
 const roomFeaturesRouter = require('./routes/roomFeaturesRouter')
 const ratingRouter = require('./routes/ratingRouter')
+
 const app = express()
 const dotenv = require('dotenv');
 
