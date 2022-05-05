@@ -4,6 +4,7 @@ const cors = require('cors')
 const roomRouter = require('./routes/roomRouter')
 const reservationRouter = require('./routes/reservationRouter')
 const administrationRouter = require('./routes/administrationRouter')
+const roomFeaturesRouter = require('./routes/roomFeaturesRotuer')
 const app = express()
 const dotenv = require('dotenv');
 
@@ -19,6 +20,7 @@ app.use(cors())
 app.use('/', roomRouter)
 app.use('/', reservationRouter)
 app.use('/', administrationRouter)
+app.use('/', roomFeaturesRouter)
 
 // get config vars
 dotenv.config();
