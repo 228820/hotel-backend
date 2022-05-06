@@ -6,24 +6,27 @@ CREATE DATABASE hotel_database;
 
 CREATE TABLE rooms (
     room_id SERIAL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL, -- name of room
+    img_link VARCHAR(128), 
+    title VARCHAR(50) NOT NULL, -- name of room
     sleeps INT NOT NULL, -- sleep slots (example. number of beds)
     floor INT NOT NULL,
     price NUMERIC NOT NULL, -- per night
-    description VARCHAR(512) NOT NULL
+    description VARCHAR(128) NOT NULL, -- short description for rooms cards
+    extended_description VARCHAR(512) NOT NULL -- description for rooms pages
 );
 
 CREATE TYPE feature_type AS ENUM ('is_parking', 'is_wifi', 'animal_allow');
 
 CREATE TABLE room_features (
     feature_id SERIAL PRIMARY KEY,
-    room_id INT,
+    room_id INT NOT NULL,
     type feature_type NOT NULL, -- type of feature
     status Boolean NOT NULL DEFAULT FALSE,
 
     CONSTRAINT fk_rooms
         FOREIGN KEY(room_id)
             REFERENCES rooms(room_id)
+                ON DELETE CASCADE
 );
 
 CREATE TABLE clients (
@@ -77,4 +80,18 @@ CREATE TABLE users (
     password VARCHAR(128) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(120) NOT NULL
+);
+
+CREATE TABLE ratings (
+    rating_id SERIAL PRIMARY KEY,
+    room_id INT NOT NULL,
+    rating INT NOT NULL, -- count of 'stars' from 0 to 5
+    review VARCHAR(512), -- message from clients for their stay
+
+    CONSTRAINT chk_rating
+        CHECK (rating between 0 and 5),
+    CONSTRAINT fk_rooms
+        FOREIGN KEY(room_id)
+            REFERENCES rooms(room_id)
+                ON DELETE CASCADE
 );
