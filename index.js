@@ -34,3 +34,26 @@ dotenv.config();
 app.listen(PORT, () => {
     console.log(`Server is listening on http://localhost:${PORT}...`)
 })
+
+// temp add first user
+const pg = require('./db/pg');
+const bcrypt = require('bcrypt');
+
+const createDefaultUser = async() => {
+    try {
+        const salt = bcrypt.genSaltSync(10);
+        const pass = bcrypt.hashSync('admin', salt);
+        const result = await pg.query(`
+            INSERT INTO users (user_id,login,password,first_name,last_name,email)
+            VALUES (1,'admin', $1, 'Jan', 'Nowak', 'nowak@testowy.pl')
+            ON CONFLICT DO NOTHING;
+        `, [pass]);
+
+        if (result.rowCount) {
+            console.log('Default user \'admin\' with password \'admin\' created.');
+        }
+    } catch (e) {
+        console.error(e);
+    }
+};
+createDefaultUser();
