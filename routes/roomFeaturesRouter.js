@@ -2,16 +2,17 @@ const express = require('express')
 const router = express.Router()
 
 const RoomFeaturesController = require('../controllers/roomFeaturesController')
+const guard = require("./router-guard");
 
 // Get all rooms features
 router.get('/features', RoomFeaturesController.getAllRoomsFeatures) 
 // Get one room features
 router.get('/features/:id', RoomFeaturesController.getRoomFeatures)
 // Add romm features
-router.post('/features', RoomFeaturesController.saveRoomFeatures)
+router.post('/features', guard, RoomFeaturesController.saveRoomFeatures)
 // Update room features
-router.put('/features/:id', RoomFeaturesController.updateRoomFeatures)
+router.put('/features/:id', guard, RoomFeaturesController.updateRoomFeatures)
 // Delete room features
-router.delete('/features/:id', RoomFeaturesController.deleteRoomFeatures)
+router.delete('/features/:id', guard, RoomFeaturesController.deleteRoomFeatures)
 
 module.exports = router
