@@ -4,7 +4,7 @@ class RoomController {
     async getAllRooms(req, res) {
         // Try to get all rooms
         try {
-            const { rows } = await db.query('SELECT * FROM ROOMS')
+            const { rows } = await db.query('SELECT * FROM ROOMS ORDER BY room_id DESC')
             return res.status(200).json({ rows })
         } catch (err) {
             return res.status(500).json({ message: err.message})
@@ -45,7 +45,7 @@ class RoomController {
         img_link === undefined ? img_link = '' : img_link
 
         //  Check if every params which is need exists
-        if(!title || !sleeps || !floor || !price || !description || !extended_description) {
+        if(!title || !sleeps || !floor || !price) {
             return res.status(400).json({ message: 'Some parameters are missing!' })
         }
 
@@ -53,7 +53,7 @@ class RoomController {
         try {
             await db.query(`INSERT INTO ROOMS(IMG_LINK, TITLE, SLEEPS, FLOOR, PRICE, DESCRIPTION, EXTENDED_DESCRIPTION)
             VALUES($1, $2, $3, $4, $5, $6, $7)`,
-            [img_link, title, sleeps, floor, price, description, extended_description])
+            [img_link, title, sleeps, floor, price, description ?? '', extended_description ?? ''])
 
             return res.sendStatus(201)
         } catch (err) {
@@ -75,7 +75,7 @@ class RoomController {
         img_link === undefined ? img_link = '' : img_link
 
         //  Check if every params which is need exists
-        if(!title || !sleeps || !floor || !price || !description || !extended_description) {
+        if(!title || !sleeps || !floor || !price) {
             return res.status(400).json({ message: 'Some parameters are missing!' })
         }
 
@@ -84,7 +84,7 @@ class RoomController {
             await db.query(`UPDATE ROOMS SET IMG_LINK = $1, TITLE = $2, SLEEPS = $3,
             FLOOR = $4, PRICE = $5, DESCRIPTION = $6, EXTENDED_DESCRIPTION = $7
             WHERE ROOM_ID = $8`,
-            [img_link, title, sleeps, floor, price, description, extended_description, id])
+            [img_link, title, sleeps, floor, price, description ?? '', extended_description ?? '', id])
 
             return res.sendStatus(202)
         } catch (err) {

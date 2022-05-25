@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken')
+
 const guard = (req, res, next) => {
     if (req.path === '/login') {
         next();
