@@ -43,12 +43,15 @@ class UserController {
     async addUser(req, res) {
         try {
             const { email, login, password, first_name, last_name } = req.body
+            let { is_admin } = req.body
 
             //  Check if every params which is need exists
             if(!email || !login || !password || !first_name || !last_name) {
                 return res.status(400).json({ message: 'Some parameters are missing!' })
             }
-    
+
+            is_admin === undefined ? is_admin = false : is_admin
+            
             //  Check if user exist already
             const { rows } = await db.query('SELECT * FROM USERS WHERE EMAIL = $1', [email])
             if(rows.length) {
@@ -59,8 +62,10 @@ class UserController {
             const hashedPassword = await bcrypt.hash(password, 10)
     
             //  Save user
-            await db.query('INSERT INTO USERS(email, login, password, first_name, last_name) VALUES($1, $2, $3, $4, $5)',
-            [email, login, hashedPassword, first_name, last_name])
+            await db.query(`INSERT INTO USERS
+                            (email, login, password, first_name, last_name, is_admin)
+                            VALUES($1, $2, $3, $4, $5, $6)`,
+                            [email, login, hashedPassword, first_name, last_name, is_admin])
 
             return res.status(201).json({ message: 'User create successfully!' })
         } catch (err) {
@@ -84,10 +89,10 @@ class UserController {
                 return res.status(404).json({ message: `User of id: ${id} doesn't exist!` })
             }
 
-            let { email, login, password, first_name, last_name } = req.body
+            let { email, login, password, first_name, last_name, is_admin } = req.body
 
             //  Check if one or more parameters are given
-            if(!email && !login && !password && !first_name && !last_name) {
+            if(!email && !login && !password && !first_name && !last_name && !is_admin) {
                 return res.status(400).json({ message: 'No parameters given!' })
             }
 
@@ -96,13 +101,17 @@ class UserController {
             login === undefined ? login = rows[0].login : login
             first_name === undefined ? first_name = rows[0].first_name : first_name
             last_name === undefined ? last_name = rows[0].last_name : last_name
+            is_admin === undefined ? is_admin = rows[0].is_admin : is_admin
 
             //  If password is given generate hashed password
             password === undefined ? password = rows[0].password : password = await bcrypt.hash(password, 10)
             
             //  Update user in db
-            await db.query('UPDATE USERS SET EMAIL = $1, LOGIN = $2, PASSWORD = $3, FIRST_NAME = $4, LAST_NAME = $5 WHERE USER_ID = $6',
-            [email, login, password, first_name, last_name, id])
+            await db.query(`UPDATE USERS
+                            SET EMAIL = $1, LOGIN = $2, PASSWORD = $3,
+                            FIRST_NAME = $4, LAST_NAME = $5, IS_ADMIN = $6
+                            WHERE USER_ID = $7`,
+            [email, login, password, first_name, last_name, is_admin, id])
 
             return res.status(201).json({ message: 'User update successfully!' })
         } catch (err) {

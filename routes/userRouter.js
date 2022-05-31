@@ -1,6 +1,15 @@
 const express = require('express')
 const router = express.Router()
 
+/*
+
+    HERE WE NEED GUARD FOR ADMIN ACCOUNT
+
+    I ALREADY ADD ROLE FIELD IN DB
+
+*/
+
+
 const UserController = require('../controllers/userController')
 
 //  GET /users

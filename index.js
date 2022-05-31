@@ -27,7 +27,7 @@ app.use('/', reservationRouter)
 app.use('/', administrationRouter)
 app.use('/', roomFeaturesRouter)
 app.use('/', ratingRouter)
-app.use('/super/secret/endpoint/', userRouter)
+app.use('/', userRouter)
 
 // get config vars
 dotenv.config();
