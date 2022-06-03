@@ -6,7 +6,7 @@ CREATE DATABASE hotel_database;
 
 CREATE TABLE rooms (
     room_id SERIAL PRIMARY KEY,
-    img_link VARCHAR(128), 
+    img_link VARCHAR(512), 
     title VARCHAR(50) NOT NULL, -- name of room
     sleeps INT NOT NULL, -- sleep slots (example. number of beds)
     floor INT NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE rooms (
     extended_description VARCHAR(512) NOT NULL -- description for rooms pages
 );
 
-CREATE TYPE feature_type AS ENUM ('is_parking', 'is_wifi', 'animal_allow');
+CREATE TYPE feature_type AS ENUM ('IS_PARKING', 'IS_WIFI', 'ANIMAL_ALLOW');
 
 CREATE TABLE room_features (
     feature_id SERIAL PRIMARY KEY,
