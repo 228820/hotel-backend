@@ -7,6 +7,8 @@ const ReservationController = require('../controllers/reservationController')
 router.get('/reservations', ReservationController.getAllReservations)
 // Get one reservation
 router.get('/reservations/:id', ReservationController.getReservation)
+//  Get one reservation by room id
+router.get('/reservations/room/:id', ReservationController.getReservationByRoomId)
 //  Add reservation
 router.post('/reservations', ReservationController.saveReservation)
 //  Update reservation
