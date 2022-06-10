@@ -16,7 +16,7 @@ class ReservationController {
         //  Get reservation id from request
         const id = req.params.id
         if(!id) {
-            return res.status(500).json({ message: 'Incorrect reservation id!' })            
+            return res.status(500).json({ message: 'Reservation id is missing!' })            
         }
 
         //  Try to get reservation of reservation_id == id
@@ -26,6 +26,40 @@ class ReservationController {
             //  If empty rows
             if(!rows.length) {
                 return res.status(404).json({ message: 'Not found reservation of given id!' })
+            }
+            
+            return res.status(200).json({ rows })
+        } catch (err) {
+            return res.status(500).json({ message: err.message })
+        }
+    }
+
+    async getReservationByRoomId(req, res) {
+        //  Get room id from request
+        const id = req.params.id
+        if(!id) {
+            return res.status(500).json({ message: 'Room id is missing!' })            
+        }
+
+        //  Check if room of given id exists
+        try {
+            const { rows } = await db.query('SELECT * FROM ROOMS WHERE ROOM_ID = $1', [id])
+
+            //  If empty rows
+            if(!rows.length) {
+                return res.status(404).json({ message: 'Not found room of given id!' })
+            }
+        } catch (err) {
+            return res.status(500).json({ message: err.message })
+        }
+
+        //  Try to get reservations of room_id == id
+        try {
+            const { rows } = await db.query('SELECT * FROM RESERVATIONS WHERE ROOM_ID = $1', [id])
+
+            //  If empty rows
+            if(!rows.length) {
+                return res.status(404).json({ message: 'Not found reservations of given id!' })
             }
             
             return res.status(200).json({ rows })
