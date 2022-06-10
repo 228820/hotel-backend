@@ -79,7 +79,8 @@ CREATE TABLE users (
     login VARCHAR(64) NOT NULL,
     password VARCHAR(128) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
-    last_name VARCHAR(120) NOT NULL
+    last_name VARCHAR(120) NOT NULL,
+    is_admin BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE ratings (
