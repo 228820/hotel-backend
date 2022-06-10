@@ -22,17 +22,17 @@ class RoomFeaturesController {
         try {
             //  Select features with 'pivot' so it easier to send to front
             const { rows } = await db.query(`select room_id, 
-                                                case (select status from room_features where room_features.room_id = $1 and type = 'is_wifi')
+                                                case (select status from room_features where room_features.room_id = $1 and type = 'IS_WIFI')
                                                 when true then true
                                                 when false then false
                                                 end is_wifi,
                                                 
-                                                case (select status from room_features where room_features.room_id = $1 and type = 'is_parking')
+                                                case (select status from room_features where room_features.room_id = $1 and type = 'IS_PARKING')
                                                 when true then true
                                                 when false then false
                                                 end is_parking,
                                                 
-                                                case (select status from room_features where room_features.room_id = $1 and type = 'animal_allow')
+                                                case (select status from room_features where room_features.room_id = $1 and type = 'ANIMAL_ALLOW')
                                                 when true then true
                                                 when false then false
                                                 end animal_allow

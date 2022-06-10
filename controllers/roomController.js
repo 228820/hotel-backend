@@ -11,16 +11,6 @@ class RoomController {
         }
     }
 
-    async getAllRoomsRatings(req, res) {
-        //  Try to get count of raitings and average of ratnigs for ech room
-        try {
-            const { rows } = await db.query('SELECT ROOM_ID, COUNT(RATING), AVG(RATING) FROM RATINGS GROUP BY ROOM_ID')            
-            return res.status(200).json({ rows })
-        } catch (err) {
-            res.status(500).json({ message: err.message })
-        }
-    }
-
     async getRoom(req, res) {
         //  Get room id from request
         const id = req.params.id
