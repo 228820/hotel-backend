@@ -6,15 +6,15 @@ const clientController = require('../controllers/clientController')
 router.get('/clients', clientController.getAllClients)
 
 //  GET one client
-router.get('/clients', clientController.getClientById)
+router.get('/clients/:id', clientController.getClientById)
 
 //  POST client
 router.post('/clients', clientController.saveClient)
 
 //  PUT client
-router.put('/clients', clientController.updateClient)
+router.put('/clients/:id', clientController.updateClient)
 
 //  DELETE client
-router.delete('/clients', clientController.deleteClient)
+router.delete('/clients/:id', clientController.deleteClient)
 
 module.exports = router
