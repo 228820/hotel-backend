@@ -68,7 +68,11 @@ class ClientController {
                             email, postal_code, city, street,
                             house_number, aparment_number])
 
-            return res.sendStatus(201)
+            //  Get saved client of DOCUMENT_NUMBER == document_number (we need client id at the front)
+            const { rows } = await db.query(`SELECT * FROM CLIENTS WHERE DOCUMENT_NUMBER = $1`,
+            [document_number])
+
+            return res.status(201).json({ rows })
         } catch (err) {
             res.status(500).json({ message: err.message })
         } 
