@@ -33,9 +33,9 @@ CREATE TABLE clients (
     client_id SERIAL PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL, 
     last_name VARCHAR(120) NOT NULL,
-    document_number VARCHAR(11) NOT NULL,
-    phone_number VARCHAR(16) NOT NULL,
-    email VARCHAR(64) NOT NULL,
+    document_number VARCHAR(11) NOT NULL UNIQUE,
+    phone_number VARCHAR(16) NOT NULL UNIQUE,
+    email VARCHAR(64) NOT NULL UNIQUE,
 
     postal_code VARCHAR(8) NOT NULL,
     city VARCHAR(64) NOT NULL,
@@ -75,8 +75,8 @@ CREATE TABLE payments (
 
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
-    email VARCHAR(64) NOT NULL,
-    login VARCHAR(64) NOT NULL,
+    email VARCHAR(64) NOT NULL UNIQUE,
+    login VARCHAR(64) NOT NULL UNIQUE,
     password VARCHAR(128) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(120) NOT NULL,

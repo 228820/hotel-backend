@@ -9,6 +9,7 @@ const administrationRouter = require('./routes/administrationRouter')
 const roomFeaturesRouter = require('./routes/roomFeaturesRouter')
 const ratingRouter = require('./routes/ratingRouter')
 const userRouter = require('./routes/userRouter')
+const clientRouter = require('./routes/clientRouter')
 
 const app = express()
 const dotenv = require('dotenv');
@@ -28,6 +29,7 @@ app.use('/', administrationRouter)
 app.use('/', roomFeaturesRouter)
 app.use('/', ratingRouter)
 app.use('/', userRouter)
+app.use('/', clientRouter)
 
 // get config vars
 dotenv.config();
