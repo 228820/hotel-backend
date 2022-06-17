@@ -15,7 +15,7 @@ CREATE TABLE rooms (
     extended_description VARCHAR(512) NOT NULL -- description for rooms pages
 );
 
-CREATE TYPE feature_type AS ENUM ('IS_PARKING', 'IS_WIFI', 'ANIMAL_ALLOW');
+CREATE TYPE feature_type AS ENUM ('IS_PARKING', 'IS_WIFI', 'ANIMAL_ALLOW', 'IS_BREAKFAST', 'IS_ROOM_SERVICE', 'IS_LOUNGE', 'IS_POOL', 'IS_SPA', 'IS_GARDEN', 'IS_GYM');
 
 CREATE TABLE room_features (
     feature_id SERIAL PRIMARY KEY,

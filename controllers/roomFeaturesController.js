@@ -35,7 +35,42 @@ class RoomFeaturesController {
                                                 case (select status from room_features where room_features.room_id = $1 and type = 'ANIMAL_ALLOW')
                                                 when true then true
                                                 when false then false
-                                                end animal_allow
+                                                end animal_allow,
+                                                
+                                                case (select status from room_features where room_features.room_id = $1 and type = 'IS_BREAKFAST')
+                                                when true then true
+                                                when false then false
+                                                end is_breakfast,
+                                                
+                                                case (select status from room_features where room_features.room_id = $1 and type = 'IS_ROOM_SERVICE')
+                                                when true then true
+                                                when false then false
+                                                end is_room_service,
+                                                
+                                                case (select status from room_features where room_features.room_id = $1 and type = 'IS_LOUNGE')
+                                                when true then true
+                                                when false then false
+                                                end is_lounge,
+                                                
+                                                case (select status from room_features where room_features.room_id = $1 and type = 'IS_POOL')
+                                                when true then true
+                                                when false then false
+                                                end is_pool,
+                                                
+                                                case (select status from room_features where room_features.room_id = $1 and type = 'IS_SPA')
+                                                when true then true
+                                                when false then false
+                                                end is_spa,
+                                                
+                                                case (select status from room_features where room_features.room_id = $1 and type = 'IS_GARDEN')
+                                                when true then true
+                                                when false then false
+                                                end is_garden,
+                                                
+                                                case (select status from room_features where room_features.room_id = $1 and type = 'IS_GYM')
+                                                when true then true
+                                                when false then false
+                                                end is_gym
                                             from room_features
                                             where room_id = $1
                                             group by room_id`, [id])
@@ -95,6 +130,34 @@ class RoomFeaturesController {
             return res.sendStatus(202)
         } catch (err) {
             return res.status(500).json({ message: err.message })            
+        }
+    }
+
+    async setRoomFeatures(req, res) {
+        const id = req.params.id
+        if(!id) {
+            return res.status(500).json({ message: 'Incorrect feature id!' })
+        }
+
+        let { type, status } = req.body
+
+        type = type ? type.toString().toUpperCase() : ''
+
+        if (status === null || status === undefined) {
+            status = false;
+        }
+
+        try {
+            const { rows } = await db.query('SELECT * FROM ROOM_FEATURES WHERE room_id=$1 AND type=$2', [id, type])
+            if (rows.length === 0) { // we have to insert new feature
+                await db.query('INSERT INTO ROOM_FEATURES(ROOM_ID, TYPE, STATUS) VALUES($1, $2, $3)', [id, type, status]);
+            } else { // we have to update feature
+                await db.query('UPDATE ROOM_FEATURES SET STATUS = $1 WHERE room_id = $2 AND type = $3', [status, id, type]);
+            }
+
+            return res.sendStatus(200);
+        } catch (err) {
+            return res.status(500).json({ message: err.message })
         }
     }
 
