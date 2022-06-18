@@ -11,6 +11,7 @@ const ratingRouter = require('./routes/ratingRouter')
 const userRouter = require('./routes/userRouter')
 const clientRouter = require('./routes/clientRouter')
 const filesRouter = require('./routes/filesRouter')
+const paymentsRouter = require('./routes/paymentsRouter')
 
 const app = express()
 const dotenv = require('dotenv');
@@ -33,6 +34,7 @@ app.use('/', ratingRouter)
 app.use('/', userRouter)
 app.use('/', clientRouter)
 app.use('/', filesRouter)
+app.use('/', paymentsRouter)
 
 // get config vars
 dotenv.config();
