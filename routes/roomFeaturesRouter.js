@@ -12,6 +12,8 @@ router.get('/features/:id', RoomFeaturesController.getRoomFeatures)
 router.post('/features', guard, RoomFeaturesController.saveRoomFeatures)
 // Update room features
 router.put('/features/:id', guard, RoomFeaturesController.updateRoomFeatures)
+// Set room features
+router.patch('/features/:id', guard, RoomFeaturesController.setRoomFeatures)
 // Delete room features
 router.delete('/features/:id', guard, RoomFeaturesController.deleteRoomFeatures)
 

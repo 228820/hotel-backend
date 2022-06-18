@@ -1,10 +1,12 @@
 const db = require('../db/pg')
+const FilesManager = require("../utils/files-manager");
+const uuid = require('uuid');
 
 class RoomController {
     async getAllRooms(req, res) {
         // Try to get all rooms
         try {
-            const { rows } = await db.query('SELECT * FROM ROOMS ORDER BY room_id DESC')
+            const { rows } = await db.query('SELECT * FROM ROOMS ORDER BY room_id DESC  ')
             return res.status(200).json({ rows })
         } catch (err) {
             return res.status(500).json({ message: err.message})
@@ -34,6 +36,10 @@ class RoomController {
         // If img_link is not given set a valu to not to save null value into db
         img_link === undefined ? img_link = '' : img_link
 
+        if (img_link && img_link.includes('base64')) {
+            img_link = await FilesManager.saveBase64ToFile(req, img_link, 'room_image_' + uuid.v4());
+        }
+
         //  Check if every params which is need exists
         if(!title || !sleeps || !floor || !price) {
             return res.status(400).json({ message: 'Some parameters are missing!' })
@@ -41,11 +47,11 @@ class RoomController {
 
         // Try to save room
         try {
-            await db.query(`INSERT INTO ROOMS(IMG_LINK, TITLE, SLEEPS, FLOOR, PRICE, DESCRIPTION, EXTENDED_DESCRIPTION)
-            VALUES($1, $2, $3, $4, $5, $6, $7)`,
+            const result = await db.query(`INSERT INTO ROOMS(IMG_LINK, TITLE, SLEEPS, FLOOR, PRICE, DESCRIPTION, EXTENDED_DESCRIPTION)
+            VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING room_id`,
             [img_link, title, sleeps, floor, price, description ?? '', extended_description ?? ''])
 
-            return res.sendStatus(201)
+            return res.status(200).json({ id: result?.rows[0]?.room_id ?? 0})
         } catch (err) {
             return res.status(500).json({ message: err.message })
         }
@@ -63,6 +69,10 @@ class RoomController {
 
         // If img_link is not given set a valu to not to save null value into db
         img_link === undefined ? img_link = '' : img_link
+
+        if (img_link && img_link.includes('base64')) {
+            img_link = await FilesManager.saveBase64ToFile(req, img_link, 'room_image_' + id);
+        }
 
         //  Check if every params which is need exists
         if(!title || !sleeps || !floor || !price) {
