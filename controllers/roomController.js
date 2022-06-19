@@ -6,7 +6,20 @@ class RoomController {
     async getAllRooms(req, res) {
         // Try to get all rooms
         try {
-            const { rows } = await db.query('SELECT * FROM ROOMS ORDER BY room_id DESC  ')
+            const { rows } = await db.query(`
+                SELECT 
+                    *,
+                    CASE
+                        WHEN 
+                            EXISTS(
+                                SELECT 1 FROM reservations re
+                                WHERE re.room_id = r.room_id AND CURRENT_DATE BETWEEN re.start_date AND re.end_date
+                            ) 
+                        THEN 1
+                        ELSE 0
+                    END as reserved
+                FROM ROOMS r ORDER BY room_id DESC`
+            );
             return res.status(200).json({ rows })
         } catch (err) {
             return res.status(500).json({ message: err.message})
