@@ -61,16 +61,12 @@ class ClientController {
 
         // Try to add client
         try {
-            await db.query(`INSERT INTO CLIENTS(FIRST_NAME, LAST_NAME, DOCUMENT_NUMBER, PHONE_NUMBER,
+            const { rows } = await db.query(`INSERT INTO CLIENTS(FIRST_NAME, LAST_NAME, DOCUMENT_NUMBER, PHONE_NUMBER,
                             EMAIL, POSTAL_CODE, CITY, STREET, HOUSE_NUMBER, APARTMENT_NUMBER)
-                            VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+                            VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
                             [first_name, last_name, document_number, phone_number,
                             email, postal_code, city, street,
                             house_number, aparment_number])
-
-            //  Get saved client of DOCUMENT_NUMBER == document_number (we need client id at the front)
-            const { rows } = await db.query(`SELECT * FROM CLIENTS WHERE DOCUMENT_NUMBER = $1`,
-            [document_number])
 
             return res.status(201).json({ rows })
         } catch (err) {

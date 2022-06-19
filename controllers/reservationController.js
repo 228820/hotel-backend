@@ -83,13 +83,9 @@ class ReservationController {
 
         try {
             //  Try to add reservation to db
-            await db.query(`INSERT INTO RESERVATIONS (ROOM_ID, CLIENT_ID, START_DATE, END_DATE, MESSAGE, PAID)
-                            VALUES ($1, $2, $3, $4, $5, $6)`,
+            const { rows } = await db.query(`INSERT INTO RESERVATIONS (ROOM_ID, CLIENT_ID, START_DATE, END_DATE, MESSAGE, PAID)
+                            VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
                             [room_id, client_id, start_date, end_date, message, paid])
-
-            //  Try to get recent reservation
-            const { rows } = await db.query(`SELECT * FROM RESERVATIONS WHERE ROOM_ID = $1 AND CLIENT_ID = $2
-                                            AND START_DATE = $3`, [room_id, client_id, start_date])
 
             return res.status(201).json({ rows })
         } catch (err) {
