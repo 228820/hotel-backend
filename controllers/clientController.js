@@ -98,7 +98,7 @@ class ClientController {
             city,
             street,
             house_number,
-            aparment_number
+            apartment_number
         } = req.body
 
         //  Check if every params which is need exists
@@ -114,7 +114,7 @@ class ClientController {
             EMAIL = $5, POSTAL_CODE = $6, CITY = $7, STREET = $8, HOUSE_NUMBER = $9, APARTMENT_NUMBER = $10
             WHERE CLIENT_ID = $11`,
             [first_name, last_name, document_number, phone_number,
-            email, postal_code, city, street, house_number, aparment_number, id])
+            email, postal_code, city, street, house_number, apartment_number, id])
 
             return res.sendStatus(201)
         } catch (err) {

@@ -19,15 +19,24 @@ class PaymentsController {
                 return res.status(500).json({ message: 'Incorrect reservation id!' })
             }
 
-            const { rows } = await db.query('SELECT * FROM rooms WHERE room_id = $1', [roomId]);
-            if (!rows || !rows.length) {
+            const roomsResult = await db.query('SELECT * FROM rooms WHERE room_id = $1', [roomId]);
+            console.log(roomsResult.length)
+            if (!roomsResult.rows || !roomsResult.rows.length) {
                 return res.status(404).json({ message: 'Room not found!' })
             }
+            const room = roomsResult.rows[0];
 
-            const room = rows[0];
+            const reservationsResult = await db.query(`
+                SELECT c.*, DATE_PART('day', r.end_date::timestamp - r.start_date::timestamp) as days FROM reservations r
+                JOIN clients c ON c.client_id = r.client_id
+                WHERE r.reservation_id = $1
+            `, [reservationId]);
+            if (!reservationsResult.rows || !reservationsResult.rows.length) {
+                return res.status(404).json({ message: 'Reservation not found!' })
+            }
+            const reservation = reservationsResult.rows[0];
 
             const successUrl = req.protocol + '://' + req.get('host') + `/checkout_success?session_id={CHECKOUT_SESSION_ID}&reservation_id=${reservationId}&room_id=${roomId}`;
-
             const session = await stripe.checkout.sessions.create({
                 line_items: [
                     {
@@ -40,9 +49,10 @@ class PaymentsController {
                             },
                             unit_amount_decimal: room.price * 100
                         },
-                        quantity: 1,
+                        quantity: (reservation.days ?? 1),
                     },
                 ],
+                customer_email: reservation.email,
                 mode: 'payment',
                 success_url: successUrl,
                 cancel_url: `${APP_DOMAIN}/checkout_cancel?session_id={CHECKOUT_SESSION_ID}`

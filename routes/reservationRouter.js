@@ -5,6 +5,7 @@ const ReservationController = require('../controllers/reservationController')
 
 // Get all reservations
 router.get('/reservations', ReservationController.getAllReservations)
+router.get('/reservations-details', ReservationController.getAllReservationsDetails)
 
 // Get one reservation
 router.get('/reservations/:id', ReservationController.getReservation)
