@@ -1,6 +1,6 @@
 const stripe = require('stripe')('sk_test_51LC2QfBXADR0JfNuwpVkDWWDimjT13925hcFSSzj8umcXfdC4jyvICqtjLR032DTTIVO5SKBOdDguoGArxs2b0A900uE4hBRnj');
 const db = require('../db/pg')
-const APP_DOMAIN = 'http://localhost:3001';
+const APP_DOMAIN = 'http://localhost:3000';
 
 // Payment succeeds 4242 4242 4242 4242
 // Payment requires authentication 4000 0025 0000 3155
@@ -85,7 +85,7 @@ class PaymentsController {
             let result = await db.query('SELECT * FROM reservations WHERE reservation_id = $1', [reservationId])
             const reservation = result.rows[0];
 
-            result = await db.query('SELECT * FROM rooms WHERE room_id = $1', [reservationId])
+            result = await db.query('SELECT * FROM rooms WHERE room_id = $1', [roomId])
             const room = result.rows[0];
 
             await db.query('INSERT INTO payments (reservation_id, date, amount, card_id) VALUES ($1, $2, $3, $4)', [reservationId, new Date(), room.price, ''])
