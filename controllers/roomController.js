@@ -43,7 +43,7 @@ class RoomController {
     }
 
     async saveRoom(req, res) {
-        const { title, sleeps, floor, price, description, extended_description } = req.body
+        const { title, room_standard, sleeps, floor, price, description, extended_description } = req.body
         let { img_link } = req.body
 
         // If img_link is not given set a valu to not to save null value into db
@@ -60,9 +60,9 @@ class RoomController {
 
         // Try to save room
         try {
-            const result = await db.query(`INSERT INTO ROOMS(IMG_LINK, TITLE, SLEEPS, FLOOR, PRICE, DESCRIPTION, EXTENDED_DESCRIPTION)
-            VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING room_id`,
-            [img_link, title, sleeps, floor, price, description ?? '', extended_description ?? ''])
+            const result = await db.query(`INSERT INTO ROOMS(IMG_LINK, TITLE, ROOM_STANDARD, SLEEPS, FLOOR, PRICE, DESCRIPTION, EXTENDED_DESCRIPTION)
+            VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING room_id`,
+            [img_link, title, room_standard, sleeps, floor, price, description ?? '', extended_description ?? ''])
 
             return res.status(200).json({ id: result?.rows[0]?.room_id ?? 0})
         } catch (err) {
@@ -77,7 +77,7 @@ class RoomController {
             return res.status(500).json({ message: 'Incorrect room id!' })            
         }
 
-        const { title, sleeps, floor, price, description, extended_description } = req.body
+        const { title, room_standard, sleeps, floor, price, description, extended_description } = req.body
         let { img_link } = req.body
 
         // If img_link is not given set a valu to not to save null value into db
@@ -94,10 +94,10 @@ class RoomController {
 
         // Try to update room of room_id = id
         try {
-            await db.query(`UPDATE ROOMS SET IMG_LINK = $1, TITLE = $2, SLEEPS = $3,
-            FLOOR = $4, PRICE = $5, DESCRIPTION = $6, EXTENDED_DESCRIPTION = $7
-            WHERE ROOM_ID = $8`,
-            [img_link, title, sleeps, floor, price, description ?? '', extended_description ?? '', id])
+            await db.query(`UPDATE ROOMS SET IMG_LINK = $1, TITLE = $2, ROOM_STANDARD = $3, SLEEPS = $4,
+            FLOOR = $5, PRICE = $6, DESCRIPTION = $7, EXTENDED_DESCRIPTION = $8
+            WHERE ROOM_ID = $9`,
+            [img_link, title, room_standard, sleeps, floor, price, description ?? '', extended_description ?? '', id])
 
             return res.sendStatus(202)
         } catch (err) {
