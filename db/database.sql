@@ -3,9 +3,11 @@
 CREATE DATABASE hotel_database;
 
 --  \c hotel_database             into room-database
+CREATE TYPE room_standard AS ENUM ('ECONOMIC', 'STANDARD', 'PREMIUM');
 
 CREATE TABLE rooms (
     room_id SERIAL PRIMARY KEY,
+    room_standard room_standard NOT NULL DEFAULT 'STANDARD',
     img_link VARCHAR(512), 
     title VARCHAR(50) NOT NULL, -- name of room
     sleeps INT NOT NULL, -- sleep slots (example. number of beds)
