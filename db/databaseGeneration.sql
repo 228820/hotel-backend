@@ -178,7 +178,7 @@ VALUES('BRUCE',
 	   
 
 -- Check clients
-SELECT * FROM CLIENTS
+SELECT * FROM CLIENTS;
 
 
 -- 
@@ -265,7 +265,7 @@ BEGIN
 -- 		raise notice 'cnt: % - % - %', ROOM, ROOM_RATINGS, floor(random() * 6)::int;
 	   END LOOP;
 	END LOOP;
-END; $$
+END; $$;
 
 -- Check ratings
 SELECT * FROM RATINGS;
