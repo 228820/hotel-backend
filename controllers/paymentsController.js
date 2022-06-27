@@ -1,5 +1,6 @@
 const stripe = require('stripe')('sk_test_51LC2QfBXADR0JfNuwpVkDWWDimjT13925hcFSSzj8umcXfdC4jyvICqtjLR032DTTIVO5SKBOdDguoGArxs2b0A900uE4hBRnj');
 const db = require('../db/pg')
+
 const dates = require('../utils/dates-counter')
 const APP_DOMAIN = 'http://localhost:3001'
 

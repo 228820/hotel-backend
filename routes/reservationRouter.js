@@ -16,6 +16,9 @@ router.get('/reservations/:id/client', ReservationController.getAllReservationDa
 //  Get one reservation by room id
 router.get('/reservations/room/:id', ReservationController.getReservationByRoomId)
 
+//  Get invoice of reservation by reservation id
+router.get('/reservations/:id/invoice', ReservationController.getInvoice)
+
 //  Add reservation
 router.post('/reservations', ReservationController.saveReservation)
 

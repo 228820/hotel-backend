@@ -1,4 +1,7 @@
 const db = require('../db/pg')
+const invoice = require('../utils/invoice-manager')
+const path = require('path')
+const fs = require('fs')
 
 class ReservationController {
     async getAllReservations(req, res) {
@@ -110,6 +113,40 @@ class ReservationController {
             }
             
             return res.status(200).json({ rows })
+        } catch (err) {
+            return res.status(500).json({ message: err.message })
+        }
+    }
+
+    async getInvoice(req, res) {
+        //  Get reservation id from request
+        const id = req.params.id
+        if(!id) {
+            return res.status(500).json({ message: 'Reservation id is missing!' })            
+        }
+
+        //  Generate path for invoice
+        const dir = path.join(__dirname, '..', 'data')
+        const pathForInvoice = path.join(dir + `/invoice_${id}.pdf`)
+
+        //  Check if invoice exists
+        if (fs.existsSync(pathForInvoice)) {
+            return res.status(200).download(pathForInvoice)
+        }
+
+        try {
+            console.log('---------      INVOICE     ----------')
+
+            //  Check if everything is oK
+            invoice.checkIfDirectoryAndTemplateExist()
+            
+            await invoice.startGeneratingInvoice(id)
+            
+            //  Something doesnt work with async await so i nedd do this tricky thing
+            setTimeout(() => {
+                console.log('--------------------------------------------')        
+                return res.status(200).download(pathForInvoice)
+            }, 2000)
         } catch (err) {
             return res.status(500).json({ message: err.message })
         }
