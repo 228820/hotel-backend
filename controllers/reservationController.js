@@ -12,6 +12,22 @@ class ReservationController {
         }        
     }
 
+    async getAllReservationsDetails(req, res) {
+
+        //  Try to get all reservations
+        try {
+            const { rows } = await db.query(`
+                SELECT r.*, c.*, rm.* FROM RESERVATIONS r 
+                JOIN CLIENTS c ON r.client_id = c.client_id
+                JOIN ROOMS rm ON r.room_id = rm.room_id
+                ORDER BY r.reservation_id DESC
+            `)
+            return res.status(200).json({ rows })
+        } catch (err) {
+            return res.status(500).json({ message: err.message })
+        }
+    }
+
     async getReservation(req, res) {
         //  Get reservation id from request
         const id = req.params.id
@@ -21,7 +37,12 @@ class ReservationController {
 
         //  Try to get reservation of reservation_id == id
         try {
-            const { rows } = await db.query('SELECT * FROM RESERVATIONS WHERE RESERVATION_ID = $1', [id])
+            const { rows } = await db.query(`
+                SELECT r.*, c.*, rm.* FROM RESERVATIONS r 
+                JOIN CLIENTS c ON r.client_id = c.client_id
+                JOIN ROOMS rm ON r.room_id = rm.room_id
+                WHERE r.reservation_id = $1
+            `, [id])
 
             //  If empty rows
             if(!rows.length) {
@@ -126,22 +147,21 @@ class ReservationController {
             return res.status(500).json({ message: 'Incorrect reservation id!' })            
         }
                 
-        const { room_id, client_id, start_date, end_date} = req.body
-        let { message, paid } = req.body
+        const { start_date, end_date} = req.body
+        let { message } = req.body
 
         //  If message or/and paid not given set a value to not save null values into db
         message === undefined ? message = '' : message
-        paid === undefined ? paid = false : paid 
 
         //  Check if every params which is need exists
-        if(!room_id || !client_id || !start_date || !end_date) {
+        if(!start_date || !end_date) {
             return res.status(400).json({ message: 'Some parameters are missing!' })
         }
 
         //  Try to update reservation of reservation_id == id
         try {
-            await db.query('UPDATE RESERVATIONS SET ROOM_ID = $1, CLIENT_ID = $2, START_DATE = $3, END_DATE = $4, MESSAGE = $5, PAID = $6 WHERE RESERVATION_ID = $7',
-            [room_id, client_id, start_date, end_date, message, paid, id])
+            await db.query('UPDATE RESERVATIONS SET START_DATE = $1, END_DATE = $2, MESSAGE = $3 WHERE RESERVATION_ID = $4',
+            [start_date, end_date, message, id])
 
             return res.sendStatus(202)
         } catch (err) {
@@ -159,7 +179,8 @@ class ReservationController {
 
         //  Try to delete reservation of reservation_id == id
         try {
-            await db.query('DELETE FROM RESERVATIONS WHERE RESERVATION_ID = $1', [id])
+            await db.query(`DELETE FROM PAYMENTS WHERE reservation_id = $1;`, [id])
+            await db.query(`DELETE FROM RESERVATIONS WHERE reservation_id = $1;`, [id])
 
             return res.sendStatus(204)
         } catch (err) {
