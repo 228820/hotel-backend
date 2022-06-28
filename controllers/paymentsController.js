@@ -49,7 +49,7 @@ class PaymentsController {
                                 description: room.description,
                                 images: [room.img_link]
                             },
-                            unit_amount_decimal: room.price * 100 * dates.calculateDaysBetweenDates(reservation.start_date, reservation.end_date)
+                            unit_amount_decimal: room.price * 100 * reservation.days
                         },
                         quantity: (reservation.days ?? 1),
                     },

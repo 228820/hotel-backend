@@ -6,6 +6,11 @@ class RoomController {
     async getAllRooms(req, res) {
         // Try to get all rooms
         try {
+            const startDate = req.query.start_date ? new Date(req.query.start_date ) : new Date();
+            const startDateCheck = req.query.start_date ? 1 : 0;
+            const endDate = req.query.end_date ? new Date(req.query.end_date ) : new Date();
+            const endDateCheck = !!req.query.end_date ? 1 : 0;
+
             const { rows } = await db.query(`
                 SELECT 
                     *,
@@ -18,8 +23,23 @@ class RoomController {
                         THEN 1
                         ELSE 0
                     END as reserved
-                FROM ROOMS r ORDER BY room_id DESC`
-            );
+                FROM ROOMS r 
+                WHERE
+                    (
+                        $1 = 0 OR NOT EXISTS(
+                            SELECT 1 FROM reservations re
+                            WHERE re.room_id = r.room_id AND $2 BETWEEN re.start_date AND re.end_date
+                        ) 
+                    ) AND
+                    (
+                        $3 = 0 OR NOT EXISTS(
+                            SELECT 1 FROM reservations re
+                            WHERE re.room_id = r.room_id AND $4 BETWEEN re.start_date AND re.end_date
+                        ) 
+                    )
+                ORDER BY room_id DESC`
+            , [startDateCheck, startDate, endDateCheck, endDate]);
+
             return res.status(200).json({ rows })
         } catch (err) {
             return res.status(500).json({ message: err.message})
