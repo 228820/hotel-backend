@@ -1,12 +1,7 @@
 class DatesCounter {
     calculateDaysBetweenDates(startDate, endDate) {
-        let days = 0
-        while (startDate < endDate) {
-            days ++
-            startDate.setDate(startDate.getDate() + 1)
-        }
-
-        return days
+        const difference = new Date(startDate).getTime() - new Date(endDate).getTime();
+        return Math.ceil(difference / (1000 * 3600 * 24));
     }
 }
 
